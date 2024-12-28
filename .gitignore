@@ -36,5 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### properties ###
+### properties (gradle-wrapper.properties 파일 제외) ###
 **/*.properties
+!gradle/wrapper/gradle-wrapper.properties

@@ -25,7 +25,7 @@ jobs:
       run: |
         mkdir -p src/main/resources
         mkdir -p src/test/resources
-        echo "${{ secrets.MAIN_APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
+        echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
         echo "${{ secrets.TEST_APPLICATION_PROPERTIES }}" > ./src/test/resources/application.properties
         
     - name: Setup Gradle

@@ -2,8 +2,8 @@ name: Java CI with Gradle
 
 # 0. workflow 실행 트리거
 on:
-  push:
-    branches: [ "main" ]
+  #push:
+    #branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -37,18 +37,13 @@ jobs:
     # 1-5. 빌드
     - name: Build with Gradle Wrapper
       run: ./gradlew clean build
-    # 1-6. 빌드된 파일 이름 변경
-    - name: 빌드된 파일 이름 변경하기
-      run: mv ./build/libs/*SNAPSHOT.jar ./cicdtest.jar
-    # 1-7. 빌드 및 이름 변경된 cicdtest.jar 파일 EC2 전송 
-    - name: SCP로 EC2에 빌드된 파일 전송하기
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SERVER_IP }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: cicdtest.jar
-        target: /home/ubuntu
+
+    # docker build & push to production
+    - name: Docker build & push to prod
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cicdtest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/cicdtest
 
   # 2. 배포
   deploy:
@@ -65,5 +60,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script_stop: true
         script: |
-          sudo fuser -k -n tcp 8080 || true
-          sudo nohup java -jar cicdtest.jar > ./output.log 2>&1 &
+          sudo docker ps
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
+          sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtest
+          sudo docker image prune -f

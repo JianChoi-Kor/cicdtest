@@ -2,8 +2,8 @@ name: Java CI with Gradle
 
 # 0. workflow 실행 트리거
 on:
-  #push:
-    #branches: [ "main" ]
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 

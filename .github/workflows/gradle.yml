@@ -2,8 +2,8 @@ name: Java CI with Gradle
 
 # 0. workflow 실행 트리거
 on:
-  #push:
-    #branches: [ "main" ]
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -60,7 +60,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script_stop: true
         script: |
-          sudo docker ps
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
-          sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtest
-          sudo docker image prune -f
+          docker stop $(docker ps -a -q)
+          docker rm $(docker ps-a -q)
+          docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
+          docker run -d -p 8080:8080 --name cicdtestcontainer ${{ secrets.DOCKER_USERNAME }}/cicdtest

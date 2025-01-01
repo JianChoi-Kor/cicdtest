@@ -14,7 +14,7 @@ public class CicdController {
 
     @GetMapping("/test")
     public String cicdTest() {
-        return "cicd with docker 'version 1.0.1'";
+        return "cicd with docker 'version 1.0.2'";
     }
 
     @GetMapping("/test1")

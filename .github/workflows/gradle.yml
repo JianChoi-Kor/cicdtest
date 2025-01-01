@@ -64,3 +64,4 @@ jobs:
           docker rm $(docker ps-a -q)
           docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
           docker run -d -p 8080:8080 --name cicdtestcontainer ${{ secrets.DOCKER_USERNAME }}/cicdtest
+          docker image prune -f
